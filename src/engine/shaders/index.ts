@@ -16,7 +16,7 @@ export function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLSha
   const program = gl.createProgram();
   if (!program) throw new Error('Error creating program.');
   gl.attachShader(program, vertexShader);
-  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragShader);
   gl.linkProgram(program);
 
   const success = gl.getProgramParameter(program, gl.LINK_STATUS);

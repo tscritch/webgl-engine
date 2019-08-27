@@ -11,7 +11,7 @@ class ChartCanvas extends React.Component {
   }
 
   render() {
-    return <canvas ref={this.canvasRef}></canvas>;
+    return <canvas ref={this.canvasRef} width={400} height={300} style={{ width: '400px', height: '300px' }}></canvas>;
   }
 }
 

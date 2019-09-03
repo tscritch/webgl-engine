@@ -12,7 +12,14 @@ class ChartCanvas extends React.Component {
   }
 
   render() {
-    return <canvas ref={this.canvasRef} width={400} height={300} style={{ width: '400px', height: '300px' }}></canvas>;
+    return (
+      <React.Fragment>
+        <canvas ref={this.canvasRef} width={800} height={600} style={{ width: '800px', height: '600px' }}></canvas>
+        <button style={{ margin: '20px', padding: '10px' }} onClick={() => this.engine.draw()}>
+          draw
+        </button>
+      </React.Fragment>
+    );
   }
 }
 

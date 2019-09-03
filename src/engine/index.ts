@@ -1,29 +1,43 @@
 import { createShader, createProgram } from './shaders';
-import MyFirstShader from './shaders/MyFirstShader';
+let BAR_COLOR = { r: 1, g: 1, b: 1, a: 1 };
+let TICKER_TYPE = 'DEFAULT';
+
+// const setTickerPoints: any = {
+//   DEFAULT: setDefaultTickerPoints,
+//   NONE: () => {}
+// };
+
 class Engine {
   private canvas: React.RefObject<HTMLCanvasElement>;
   private gl: WebGL2RenderingContext | null;
+  private program: WebGLProgram | null;
 
   constructor(canvas: React.RefObject<HTMLCanvasElement>) {
     this.canvas = canvas;
     this.gl = this.canvas && this.canvas.current && this.canvas.current.getContext('webgl2');
   }
 
-  prepare() {
+  async prepare() {
     this.gl = this.canvas && this.canvas.current && this.canvas.current.getContext('webgl2');
     if (!this.gl) throw new Error('Cannot get WebGL2 context.');
-    let gl = this.gl;
 
-    const v = createShader(gl, gl.VERTEX_SHADER, MyFirstShader.vertex);
-    const f = createShader(gl, gl.FRAGMENT_SHADER, MyFirstShader.frag);
+    const { gl } = this;
+
+    const v = await createShader(gl, gl.VERTEX_SHADER, 'bar');
+    const f = await createShader(gl, gl.FRAGMENT_SHADER, 'bar');
 
     if (!v || !f) return;
 
-    const program = createProgram(gl, v, f);
+    this.program = createProgram(gl, v, f);
+  }
+
+  draw() {
+    console.log('drawing to canvas element: ', this.canvas);
+    const { gl, program } = this;
 
     if (!program) return;
 
-    const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
+    const positionAttributeLocation = gl.getAttribLocation(program, 'v_barData');
     const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
     const colorLocation = gl.getUniformLocation(program, 'u_color');
 
@@ -53,16 +67,12 @@ class Engine {
     for (let ii = 0; ii < 50; ++ii) {
       setRectangle(gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300));
 
-      gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
+      // gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1);
+      gl.uniform4f(colorLocation, BAR_COLOR.r, BAR_COLOR.g, BAR_COLOR.b, BAR_COLOR.a);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       console.log('drawing triangle: ', ii);
     }
-  }
-
-  draw() {
-    console.log('drawing to canvas element: ', this.canvas);
-    let gl = this.gl;
   }
 }
 

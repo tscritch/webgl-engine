@@ -1,6 +1,6 @@
 import getShaderType from '../utils/getShaderType';
 
-export async function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
+export async function createShader(gl: WebGL2RenderingContext, type: number, name: string) {
   const shader = gl.createShader(type);
   if (!shader) throw new Error('Error creating shader.');
 
@@ -38,7 +38,8 @@ async function getShaderFromFile(name: string, type: number) {
       `Tried to get shader from file but invalid type provided: ${type}. Please provide a valid type: vert | frag`
     );
   try {
-    return await fetch(`/shaders/${name}/${name}.${type}`).then(res => res.text());
+    const url = `${process.env.PUBLIC_URL}/shaders/${name}/${name}.${getShaderType(type)}`;
+    return await fetch(url).then(res => res.text());
   } catch (e) {
     console.error(`Could not load shader with name ${name} or type ${type}.`);
   }

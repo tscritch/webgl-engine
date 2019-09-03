@@ -6,8 +6,9 @@ class ChartCanvas extends React.Component {
   engine = new Engine(this.canvasRef);
 
   componentDidMount() {
-    this.engine.prepare();
-    this.engine.draw();
+    this.engine.prepare().then(_ => {
+      this.engine.draw();
+    });
   }
 
   render() {

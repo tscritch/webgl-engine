@@ -1,7 +1,13 @@
-export function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
+import getShaderType from '../utils/getShaderType';
+
+export async function createShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type);
   if (!shader) throw new Error('Error creating shader.');
-  gl.shaderSource(shader, source);
+
+  const shaderFile = await getShaderFromFile(name, type);
+  if (!shaderFile) throw new Error('Error creating shader.');
+
+  gl.shaderSource(shader, shaderFile);
   gl.compileShader(shader);
 
   const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
@@ -24,4 +30,16 @@ export function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLSha
 
   console.log(gl.getProgramInfoLog(program));
   gl.deleteProgram(program);
+}
+
+async function getShaderFromFile(name: string, type: number) {
+  if (!['vert', 'frag'].includes(getShaderType(type)))
+    throw new Error(
+      `Tried to get shader from file but invalid type provided: ${type}. Please provide a valid type: vert | frag`
+    );
+  try {
+    return await fetch(`/shaders/${name}/${name}.${type}`).then(res => res.text());
+  } catch (e) {
+    console.error(`Could not load shader with name ${name} or type ${type}.`);
+  }
 }

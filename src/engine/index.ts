@@ -1,4 +1,4 @@
-import prepareBarProgram from './shaders/tickers/bar';
+import BarProgram from './shaders/tickers/bar';
 let TICKER_TYPE = 'DEFAULT';
 
 // const setTickerPoints: any = {
@@ -21,7 +21,7 @@ class Engine {
 
     const { gl } = this;
 
-    await prepareBarProgram(gl);
+    await BarProgram.prepare(gl);
   }
 
   draw() {
